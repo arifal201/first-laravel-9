@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Product;
+use App\Exports\ProductExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Dompdf\Dompdf;
 
 class ProductController extends Controller
 {
@@ -13,7 +17,23 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        $products = Product::all();
+        $exportExcel = url('products/export/excel');
+        $exportPdf = url('products/export/pdf');
+
+        return view('products.index', [
+            'products' => $products,
+            'exportExcel' => $exportExcel,
+            'exportPdf' => $exportPdf,
+        ]);
+    }
+
+    public function exportExcel(){
+        return Excel::download(new ProductExport, 'products.xlsx');
+    }
+
+    public function exportPdf(){
+        return Excel::download(new ProductExport, 'products.pdf', \Maatwebsite\Excel\Excel::DOMPDF);
     }
 
     /**
