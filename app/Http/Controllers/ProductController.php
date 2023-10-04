@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Exports\ProductExport;
 use Maatwebsite\Excel\Facades\Excel;
-use Dompdf\Dompdf;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class ProductController extends Controller
 {
@@ -29,10 +29,14 @@ class ProductController extends Controller
     }
 
     public function exportExcel(){
-        return Excel::download(new ProductExport, 'products.xlsx');
+        $export = new ProductExport([
+            [1,2,3]
+        ]);
+        return Excel::download($export, 'products.xlsx');
     }
 
     public function exportPdf(){
+        $spreadsheet = new Spreadsheet();
         return Excel::download(new ProductExport, 'products.pdf', \Maatwebsite\Excel\Excel::DOMPDF);
     }
 
